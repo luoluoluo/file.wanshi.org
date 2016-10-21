@@ -1,0 +1,6 @@
+/vendor
+.env
+.tags
+.tags1
+/storage/logs
+/storage/data
