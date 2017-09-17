@@ -39,15 +39,13 @@ class File
         if(!$res){
             return false;
         }
-        return $id;
+        return $id . '.' . $ext;
     }
 
     //删除文件
-    public function delete($appid, $ids){
-        $args   = [$appid];
-        $ids    = explode(',', $ids);
-        $args   = array_merge($args, $ids);
-        $sql    = 'UPDATE file SET status=0 WHERE app_id=? AND id IN (' . array_fill(0, count($ids), '?') . ')';
+    public function delete($appid, $id){
+        $args   = [$appid, $id];
+        $sql    = 'UPDATE file SET status=0 WHERE app_id=? AND id = ?';
         return app('db')->update($sql, $args);
     }
 

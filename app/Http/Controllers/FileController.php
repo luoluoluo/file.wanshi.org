@@ -12,7 +12,7 @@ class FileController extends Controller
     }
 
     //下载或查看文件
-    public function index(Request $request, $id)
+    public function index(Request $request, $id, $ext)
     {
         //inline:查看； attachement:下载；
         $type = $request->input('type');
@@ -53,10 +53,9 @@ class FileController extends Controller
     }
 
     //删除文件
-    public function destroy(Request $request)
+    public function destroy(Request $request, $id, $ext)
     {
-        $ids = $this->input('ids');
-        $res = $this->fileModel->delete($request->app->id, $ids);
+        $res = $this->fileModel->delete($request->app->id, $id);
         if (!$res) {
             return Response('删除失败', 404);
         }
