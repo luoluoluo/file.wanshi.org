@@ -23,7 +23,7 @@ Route::get('/file/{id}', [
 ]);
 //上传文件
 Route::post('/file', [
-    'middleware' => 'auth_token',
+    'middleware' => ['cors', 'auth_token'],
     'uses'       => 'FileController@create',
 ]);
 //删除文件
