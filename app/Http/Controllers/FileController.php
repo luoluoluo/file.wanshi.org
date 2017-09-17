@@ -14,7 +14,6 @@ class FileController extends Controller
     //下载或查看文件
     public function index(Request $request, $id)
     {
-        $this->fileModel->clean();
         //inline:查看； attachement:下载；
         $type = $request->input('type');
         $type = in_array($type, array('inline', 'attachment')) ? $type : 'inline';
@@ -37,7 +36,7 @@ class FileController extends Controller
         return Response()->download($fullname, null, [], $type);
     }
 
-    //上传文件(临时文件)
+    //上传文件
     public function create(Request $request)
     {
         $file = $request->file('file');
@@ -51,16 +50,6 @@ class FileController extends Controller
             return Response('上传失败', 500);
         }
         return Response($res, 200);
-    }
-
-    //临时文件持久化
-    public function persistence(Request $request){
-        $ids = $this->input('ids');
-        $res = $this->fileModel->persistence($ids);
-        if(!$res){
-            return Response('保存失败', 500);
-        }
-        return Response('保存成功', 200);
     }
 
     //删除文件

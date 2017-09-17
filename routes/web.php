@@ -26,11 +26,6 @@ Route::post('/file', [
     'middleware' => 'auth_token',
     'uses'       => 'FileController@create',
 ]);
-//持久化临时文件
-Route::put('/persistence-file', [
-    'middleware' => 'auth_sign',
-    'uses'       => 'FileController@persistence',
-]);
 //删除文件
 Route::delete('/file', [
     'middleware' => 'auth_sign',

@@ -33,7 +33,6 @@ class File
             'size'          => $file->getClientSize(),
             'ext'           => $ext,
             'md5'           => md5_file($dir . $name),
-            'status'        => 0,
             'create_time'   => time(),
         ]);
 
@@ -43,15 +42,6 @@ class File
         return $id;
     }
 
-    //持久化临时文件
-    public function persistence($appid, $ids){
-        $args   = [$appid];
-        $ids    = explode(',', $ids);
-        $args   = array_merge($args, $ids);
-        $sql    = 'UPDATE file SET status=1 WHERE app_id = ? AND id IN (' . array_fill(0, count($ids), '?') . ')';
-        return app('db')->update($sql, $args);
-    }
-
     //删除文件
     public function delete($appid, $ids){
         $args   = [$appid];
@@ -59,69 +49,6 @@ class File
         $args   = array_merge($args, $ids);
         $sql    = 'UPDATE file SET status=0 WHERE app_id=? AND id IN (' . array_fill(0, count($ids), '?') . ')';
         return app('db')->update($sql, $args);
-    }
-
-    //删除临时文件,已被删除的文件, 以及长期超过七天未使用的缩略图文件
-    public function clean(){
-        if(time()%2 == 0){
-            return $this->cleanInvalid();
-        }else{
-            return $this->cleanThumb();
-        }
-    }
-
-    //删除临时文件或状态置为已被删除的文件
-    public function cleanInvalid(){
-        $where  = 'status=0 AND create_time < ?';
-        $args   = [time()-3*86400];
-        $sql    = 'SELECT * FROM file WHERE ' . $where;
-        $item   = app('db')->selectOne($sql, $args);
-        if(!$item){
-            return false;
-        }
-        $sql    = 'DELETE FROM file WHERE id = ?';
-        $args   = [$item->id];
-        $res    = app('db')->delete($sql, $args);
-        if(!$res){
-            return false;
-        }
-        //删除文件
-        $count = 3;
-        while($count){
-            $res = unlink($item->path . $item->id . '.' . $item->ext);
-            if($res){
-                break;
-            }
-            $count--;
-        }
-        return true;
-    }
-
-    //删除超过七天未访问的缩略图
-    public function cleanThumb(){
-        $sql    = 'SELECT * FROM file_thumb WHERE update_time < ?';
-        $args   = [time()-7*86400];
-        $item   = app('db')->selectOne($sql, $args);
-        if(!$item){
-            return false;
-        }
-        $sql    = 'DELETE FROM file_thumb WHERE id = ?';
-        $args   = [$item->id];
-        $res    = app('db')->delete($sql, $args);
-
-        if(!$res){
-            return false;
-        }
-        //删除文件
-        $count = 3;
-        while($count){
-            $res = unlink($item->fullname);
-            if($res){
-                break;
-            }
-            $count--;
-        }
-        return true;
     }
 
     //缩略图，居中裁剪
