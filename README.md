@@ -48,7 +48,7 @@
 
 ```
     请求：
-    url: http://file.wanshi.org/filei/{file_id}
+    url: http://file.wanshi.org/file/{file}
     method: GET
     data: sign: 签名，size: 缩略图 eg:200; 200x300, type: (inline:查看； attachement:下载；);
 
@@ -61,9 +61,9 @@
 
 ```
     request：
-    url: http://file.wanshi.org/file
+    url: http://file.wanshi.org/file/{file}
     method: DELETE
-    data: sign: 签名，ids: 逗号隔开的文件id;
+    data: sign: 签名
 
     response：
     200, ok
