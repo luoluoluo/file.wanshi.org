@@ -22,7 +22,6 @@ class FileController extends Controller
         if (empty($item)) {
             return Response('文件不存在', 404);
         }
-        // 若是后台的图片，则其他业务线也能访问
         if ($item->app_id != $request->app->id) {
             return Response('无权访问', 403);
         }
